@@ -22,49 +22,48 @@ server = app.server
 # )
 
 
-app.layout = html.Div(style={}, children=[
-    html.H1(style={'display': 'block', 'text-align': 'center'}, children="Welcome to the Stock Visualizing and Forecasting App!", className="start"),
-    html.Div(style= {'display': 'block'},
-        children=[
-            html.Div(style= {'content':'\A'},children=[
-                html.P("Enter the stock code: "),
-                dcc.Input(
-                    placeholder='e.g AAPL (for apple)',
-                    type='text',
-                    value=''
-                )
-            ]),
-            html.Div(style={'display': 'block'}, children=[
-                # Date range picker input
-                dcc.DatePickerRange(
-                    id='my-date-picker-range',
-                    min_date_allowed=date(1995, 8, 5),
-                    max_date_allowed=date(2017, 9, 19),
-                    initial_visible_month=date(2017, 8, 5),
-                    end_date=date(2017, 8, 25)
-                ),
-                html.Div(id='output-container-date-picker-range')
-                # html.Br
-            ]),
-            html.Div([
-                # Stock price button
-                dbc.Button("Stock Price", color="primary", className="mr-1"),
-                # Indicators button
-                dbc.Button("Indicator", color="success", className="mr-1"),
-                html.Br(),
-                # Numner of days forecast input value
-                dcc.Input(
-                    placeholder='No. of Days',
-                    type='number',
-                    value=''
-                ),
-                # FOrecast BUtton
-                dbc.Button("Submit", color="dark", className="mr-1"),
-            ]),
-        ],
-        className="nav"),
-    html.Div(
-        [
+app.layout = html.Div(style={}, className='parent',children=[
+    html.H1(style={'display': 'block', 'text-align': 'center'},
+            children="Welcome to the Stock Visualizing and Forecasting App!", className="header"),
+    html.Div(className='container', children=[
+        html.Div(style={}, children=[
+             html.Div(style={'content': '\A'}, children=[
+                 html.P("Enter the stock code: "),
+                 dcc.Input(
+                     placeholder='e.g AAPL (for apple)',
+                     type='text',
+                     value=''
+                 )
+             ], className='stockInput'),
+             html.Div(style={'display': 'block'}, children=[
+                 # Date range picker input
+                 dcc.DatePickerRange(
+                     id='my-date-picker-range',
+                     min_date_allowed=date(1995, 8, 5),
+                     max_date_allowed=date(2017, 9, 19),
+                     initial_visible_month=date(2017, 8, 5),
+                     end_date=date(2017, 8, 25)
+                 ),
+                 html.Div(id='output-container-date-picker-range')
+                 # html.Br
+             ], className='dateinput'),
+             html.Div([
+                 # Stock price button
+                 dbc.Button("Stock Price", color="primary", className="mr-1"),
+                 # Indicators button
+                 dbc.Button("Indicator", color="success", className="mr-1"),
+                 html.Br(),
+                 # Numner of days forecast input value
+                 dcc.Input(
+                     placeholder='No. of Days',
+                     type='number',
+                     value=''
+                 ),
+                 # FOrecast BUtton
+                 dbc.Button("Submit", color="dark", className="mr-1")
+             ])],
+             className="nav"),
+        html.Div([
             html.Div(
                 [  # Logo
                     # Company Name
@@ -81,8 +80,10 @@ app.layout = html.Div(style={}, children=[
             html.Div([
                 # Forecast plot
             ], id="forecast-content")
-        ],
-        className="content")])
+            ],
+            className="content")
+    ])
+])
 
 if __name__ == '__main__':
     app.run_server(debug=True)
