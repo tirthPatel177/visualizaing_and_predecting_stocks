@@ -5,6 +5,10 @@ from datetime import datetime as dt
 from datetime import date
 import dash_bootstrap_components as dbc
 
+currentDay = dt.now().day
+currentMonth = dt.now().month
+currentYear = dt.now().year
+
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.SANDSTONE])
 server = app.server
 
@@ -23,8 +27,8 @@ server = app.server
 
 
 app.layout = html.Div(style={}, className='parent',children=[
-    html.H1(style={'display': 'block', 'text-align': 'center'},
-            children="Welcome to the Stock Visualizing and Forecasting App!", className="header"),
+    html.H1(style={'display': 'block', 'textAlign': 'center'},
+            children="Stock Visualizing and Forecasting App!", className="header"),
     html.Div(className='container', children=[
         html.Div(style={}, children=[
              html.Div(style={'content': '\A'}, children=[
@@ -38,30 +42,35 @@ app.layout = html.Div(style={}, className='parent',children=[
              html.Div(style={'display': 'block'}, children=[
                  # Date range picker input
                  dcc.DatePickerRange(
-                     id='my-date-picker-range',
-                     min_date_allowed=date(1995, 8, 5),
-                     max_date_allowed=date(2017, 9, 19),
-                     initial_visible_month=date(2017, 8, 5),
-                     end_date=date(2017, 8, 25)
-                 ),
-                 html.Div(id='output-container-date-picker-range')
+                     id='date_input',
+                     min_date_allowed=date(currentYear, currentMonth, currentDay),
+                     max_date_allowed=date(2022, 9, 19),
+                     initial_visible_month=date(currentYear, currentMonth, currentDay),
+                     end_date=date(currentYear, currentMonth, currentDay)
+                 )
+                 # html.Div(id='output-container-date-picker-range')
                  # html.Br
              ], className='dateinput'),
-             html.Div([
+             html.Div(children=[
                  # Stock price button
-                 dbc.Button("Stock Price", color="primary", className="mr-1"),
-                 # Indicators button
-                 dbc.Button("Indicator", color="success", className="mr-1"),
-                 html.Br(),
+                 html.Div(children=[
+                     dbc.Button("Stock Price", color="primary", className="mr-1", id='stockprice'),
+                     # Indicators button
+                     dbc.Button("Indicator", color="success", className="mr-1", id='indicator')
+                     # html.Br()
+                 ], className='midnav'),
                  # Numner of days forecast input value
-                 dcc.Input(
-                     placeholder='No. of Days',
-                     type='number',
-                     value=''
-                 ),
-                 # FOrecast BUtton
-                 dbc.Button("Submit", color="dark", className="mr-1")
-             ])],
+                 html.Div(children=[
+                     dcc.Input(
+                         placeholder='No. of Days',
+                         type='number',
+                         value='',
+                         id='nodays'
+                     ),
+                     # FOrecast BUtton
+                     dbc.Button("Forecast", color="dark", className="mr-1")
+             ], className='bottom_nav')])
+        ],
              className="nav"),
         html.Div([
             html.Div(
@@ -82,7 +91,11 @@ app.layout = html.Div(style={}, className='parent',children=[
             ], id="forecast-content")
             ],
             className="content")
-    ])
+    ]),
+    html.P(children=[
+                "Created by ",
+                html.A('Tirth Patel', href='https://www.linkedin.com/in/tirth-patel-412b70192')
+            ], className="footer")
 ])
 
 if __name__ == '__main__':
