@@ -1,9 +1,15 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+from dash.dependencies import Input, Output, State
 from datetime import datetime as dt
 from datetime import date
 import dash_bootstrap_components as dbc
+import yfinance as yf
+import pandas as pd
+import plotly.graph_objs as go
+import plotly.express as px
+
 
 currentDay = dt.now().day
 currentMonth = dt.now().month
@@ -30,15 +36,19 @@ app.layout = html.Div(style={}, className='parent',children=[
     html.H1(style={'display': 'block', 'textAlign': 'center'},
             children="Stock Visualizing and Forecasting App!", className="header"),
     html.Div(className='container', children=[
-        html.Div(style={}, children=[
+        html.Div(children=[
              html.Div(style={'content': '\A'}, children=[
                  html.P("Enter the stock code: "),
-                 dcc.Input(
-                     placeholder='e.g AAPL (for apple)',
-                     type='text',
-                     value=''
-                 )
-             ], className='stockInput'),
+                 html.Div(children=[
+                     dcc.Input(
+                         placeholder='e.g AAPL (for apple)',
+                         type='text',
+                         value='',
+                         id='stockName'
+                     ),
+                     dbc.Button("Submit", color="primary", className="mr-1", id='stockNameSubmit', n_clicks=0)
+                 ], className='start_nav')
+             ], className='start_external'),
              html.Div(style={'display': 'block'}, children=[
                  # Date range picker input
                  dcc.DatePickerRange(
@@ -72,12 +82,13 @@ app.layout = html.Div(style={}, className='parent',children=[
              ], className='bottom_nav')])
         ],
              className="nav"),
-        html.Div([
+        html.Div(children=[
+            # html.H1("This is for testing sdngsednvd  afnenv esnjesg esgnes segsebs"),
             html.Div(
                 [  # Logo
                     # Company Name
                 ],
-                className="header"),
+                className="out-header", id='out-header'),
             html.Div(  # Description
                 id="description", className="decription_ticker"),
             html.Div([
@@ -91,12 +102,28 @@ app.layout = html.Div(style={}, className='parent',children=[
             ], id="forecast-content")
             ],
             className="content")
-    ]),
+    ]
+             ),
     html.P(children=[
                 "Created by ",
                 html.A('Tirth Patel', href='https://www.linkedin.com/in/tirth-patel-412b70192')
             ], className="footer")
 ])
+
+
+@app.callback(
+        Output('out-header', 'children'),
+        Input('stockNameSubmit', 'n_clicks'),
+        State('stockName', 'value')
+)
+def company_info(n_clicks, name):
+    ticker = yf.Ticker(name)
+    inf = ticker.info
+    df = pd.DataFrame().from_dict(inf, orient="index").T
+    # print(n_clicks)
+    print(df['logo_url'])
+    # return # df's first element of 'longBusinessSummary', df's first element value of 'logo_url', df's first element value of 'shortName'
+    return ' {0} '.format(df['logo_url'][0])
 
 if __name__ == '__main__':
     app.run_server(debug=True)
