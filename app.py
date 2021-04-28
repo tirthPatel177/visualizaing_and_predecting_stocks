@@ -38,7 +38,7 @@ app.layout = html.Div(style={}, className='parent',children=[
     html.Div(className='container', children=[
         html.Div(children=[
              html.Div(style={'content': '\A'}, children=[
-                 html.P("Enter the stock code: "),
+                 html.P(style={'margin-left': '8%', 'margin-right':'8%'} ,children="Enter the stock code: "),
                  html.Div(children=[
                      dcc.Input(
                          placeholder='e.g AAPL (for apple)',
@@ -86,6 +86,8 @@ app.layout = html.Div(style={}, className='parent',children=[
             # html.H1("This is for testing sdngsednvd  afnenv esnjesg esgnes segsebs"),
             html.Div(
                 [  # Logo
+                    html.H2(id='company_name', children=[]),
+                    html.Img(id='company_logo', children='')
                     # Company Name
                 ],
                 className="out-header", id='out-header'),
@@ -111,19 +113,26 @@ app.layout = html.Div(style={}, className='parent',children=[
 ])
 
 
-@app.callback(
-        Output('out-header', 'children'),
+@app.callback([
+        Output('company_name', 'children'),
+        Output('description', 'children'),
+        Output('company_logo', 'children')
+    ],[
         Input('stockNameSubmit', 'n_clicks'),
         State('stockName', 'value')
+    ]
 )
 def company_info(n_clicks, name):
     ticker = yf.Ticker(name)
     inf = ticker.info
     df = pd.DataFrame().from_dict(inf, orient="index").T
     # print(n_clicks)
-    print(df['logo_url'])
+    company_name = df['shortName'][0]
+    description = df['longBusinessSummary'][0]
+    logo = df['logo_url'][0]
+    print(logo)
     # return # df's first element of 'longBusinessSummary', df's first element value of 'logo_url', df's first element value of 'shortName'
-    return ' {0} '.format(df['logo_url'][0])
+    return company_name, description, logo
 
 if __name__ == '__main__':
     app.run_server(debug=True)
